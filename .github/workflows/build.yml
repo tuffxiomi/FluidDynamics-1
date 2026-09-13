@@ -1,0 +1,105 @@
+name: Build FluidDynamics
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Compile and run tests
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            g++ \
+            cmake \
+            make \
+            zip
+
+      - name: Check project files
+        run: |
+          test -f src/FluidSim.hpp
+          test -f src/FluidRegistry.hpp
+          test -f src/WorldAccessor.hpp
+          test -f tests/mock_world_test.cpp
+          test -f manifest.json
+          test -f config/config.json
+          test -f config/config.schema.json
+          test -f assets/icon.png
+
+      - name: Compile tests
+        run: |
+          g++ \
+            -std=c++17 \
+            -Wall \
+            -Wextra \
+            -Wpedantic \
+            -O2 \
+            tests/mock_world_test.cpp \
+            -o mock_world_test
+
+      - name: Run tests
+        run: ./mock_world_test
+
+      - name: Validate JSON files
+        run: |
+          python3 - <<'PY'
+          import json
+
+          files = [
+              "manifest.json",
+              "config/config.json",
+              "config/config.schema.json",
+          ]
+
+          for file in files:
+              with open(file, "r", encoding="utf-8") as f:
+                  json.load(f)
+              print(f"OK: {file}")
+          PY
+
+      - name: Package source test artifact
+        run: |
+          mkdir -p artifact/FluidDynamics
+
+          cp -r src artifact/FluidDynamics/
+          cp -r config artifact/FluidDynamics/
+          cp -r assets artifact/FluidDynamics/
+          cp -r tests artifact/FluidDynamics/
+          cp manifest.json artifact/FluidDynamics/
+          cp README.md artifact/FluidDynamics/
+
+          zip -r FluidDynamics-source.zip artifact/FluidDynamics
+
+      - name: Upload test artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FluidDynamics-source
+          path: FluidDynamics-source.zip
+
+  native-build:
+    name: Native build placeholder
+    runs-on: ubuntu-24.04
+    needs: test
+    if: ${{ false }}
+
+    steps:
+      - name: Native build disabled
+        run: |
+          echo "Native .so build is disabled."
+          echo "The project does not currently contain the Preloader Android SDK,"
+          echo "verified signatures, or a CMake/xmake build definition."
