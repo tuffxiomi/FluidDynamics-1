@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "version": { "type": "integer" },
+    "enabled": { "type": "boolean" },
+    "tickIntervalTicks": { "type": "integer", "minimum": 1, "maximum": 20 },
+    "flowSpeedMultiplier": { "type": "number", "minimum": 0.1, "maximum": 4.0 },
+    "diagonalFlow": { "type": "boolean" },
+    "affectAllFluids": { "type": "boolean" },
+    "enableFluidMixing": { "type": "boolean" },
+    "maxSpreadDistance": { "type": "integer", "minimum": 1, "maximum": 16 }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "enabled": true,
+  "tickIntervalTicks": 2,
+  "flowSpeedMultiplier": 1.0,
+  "diagonalFlow": true,
+  "affectAllFluids": true,
+  "enableFluidMixing": true,
+  "maxSpreadDistance": 8
+}

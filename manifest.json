@@ -1,0 +1,11 @@
+{
+  "type": "preload-native",
+  "name": "FluidDynamics",
+  "author": "you",
+  "version": "1.0.0",
+  "entry": "libfluid_dynamics.so",
+  "icon": "assets/icon.png",
+  "minecraft_versions": [],
+  "overwrite_files": [],
+  "overwrite_folders": []
+}
